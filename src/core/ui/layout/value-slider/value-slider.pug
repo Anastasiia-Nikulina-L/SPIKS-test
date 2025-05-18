@@ -1,25 +1,53 @@
-include ../input-field/input-field.pug
+mixin input-number-field(options = {})
+  .input-number-field&attributes(attributes)
+    label.input-number-field__label
+      input.input-number-field__input(
+        type=options.type || "text",
+        id=options.id,
+        name=options.id,
+        placeholder=options.placeholder,
+        value=options.value,
+        required=options.required,
+        readonly = true //TODO поискать фикс
+      )
 
 mixin value-slider(options)
-  .slider-container&attributes(attributes)(data-config=options.config)
-    if options.title
-      #{options.titleTag || 'h3'}.slider-title(class="slider__title")= options.title
+  - options = options || {}
+  - const params = options.config ? { ...options.config, ...options } : options
+  - const { showInputs, showMinInput, showMaxInput, minValue, maxValue, minRange, maxRange, unit, title, titleTag } = params
+  -
+    const dataConfig = {
+      minRange: typeof minRange !== 'undefined' ? minRange : 0,
+      maxRange: typeof maxRange !== 'undefined' ? maxRange : 100,
+      unit: unit || '',
+      minValue: typeof minValue !== 'undefined' ? minValue : (typeof minRange !== 'undefined' ? minRange : 0),
+      maxValue: typeof maxValue !== 'undefined' ? maxValue : (typeof maxRange !== 'undefined' ? maxRange : 100),
+      showInputs: !!showInputs,
+      handles: (showMinInput && showMaxInput) ? 2 : (showMinInput || showMaxInput ? 1 : 0)
+    };
+
+  .slider-container&attributes(attributes)(data-config=JSON.stringify(dataConfig))
+    if title
+      #{titleTag || 'h3'}.slider-title(class="slider__title")= title
 
     .slider-track
 
-    if options.showInputs
-  .slider-inputs
-    if options.showMinInput
-      +input-field({
+    if showInputs
+      .slider-inputs
+        if showMinInput
+          +input-number-field({
             id: 'min-input-' + Math.random().toString(36).substr(2, 9),
-            value: options.minValue || options.minRange || 0,
-            placeholder: options.minPlaceholder || '',
-            required: options.required || false
-      }).slider-input.slider-min-input
-    if options.showMaxInput
-      +input-field({
+            value: dataConfig.minValue,
+            placeholder: params.minPlaceholder || '',
+            required: params.required || false,
+            attributes: { 'data-type': 'min' }
+          }).slider-input.slider-min-input
+        
+        if showMaxInput
+          +input-number-field({
             id: 'max-input-' + Math.random().toString(36).substr(2, 9),
-            value: options.maxValue || options.maxRange || 100,
-            placeholder: options.maxPlaceholder || '',
-            required: options.required || false
-      }).slider-input.slider-max-input
+            value: dataConfig.maxValue,
+            placeholder: params.maxPlaceholder || '',
+            required: params.required || false,
+            attributes: { 'data-type': 'max' }
+          }).slider-input.slider-max-input
