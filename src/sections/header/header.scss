@@ -1,11 +1,16 @@
 .header {
-    display: flex;
-    flex-direction: row;
-    justify-content: flex-start;
-	  align-items: center;
-    gap: 16px;
-    margin-bottom: 29px;
+    &__top-wrapper {
+      display: flex;
+      flex-direction: row;
+      justify-content: flex-start;
+	    align-items: center;
+      gap: 16px;
+      margin-bottom: 29px;
+    }
 
+    &__bottom-wrapper {
+      margin-bottom: 30px;
+    }
   
     &__title {
       font-family: 'Proxima Nova', sans-serif;

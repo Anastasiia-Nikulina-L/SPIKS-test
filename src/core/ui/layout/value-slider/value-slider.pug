@@ -3,13 +3,23 @@ include ../input-field/input-field.pug
 mixin value-slider(options)
   .slider-container&attributes(attributes)(data-config=options.config)
     if options.title
-      #{options.titleTag || 'h3'}.slider-title= options.title
+      #{options.titleTag || 'h3'}.slider-title(class="slider__title")= options.title
 
     .slider-track
 
     if options.showInputs
-      .slider-inputs
-        if options.showMinInput
-          +input-field({}).slider-input.slider-min-input
-        if options.showMaxInput
-          +input-field({}).slider-input.slider-max-input
+  .slider-inputs
+    if options.showMinInput
+      +input-field({
+            id: 'min-input-' + Math.random().toString(36).substr(2, 9),
+            value: options.minValue || options.minRange || 0,
+            placeholder: options.minPlaceholder || '',
+            required: options.required || false
+      }).slider-input.slider-min-input
+    if options.showMaxInput
+      +input-field({
+            id: 'max-input-' + Math.random().toString(36).substr(2, 9),
+            value: options.maxValue || options.maxRange || 100,
+            placeholder: options.maxPlaceholder || '',
+            required: options.required || false
+      }).slider-input.slider-max-input

@@ -4,6 +4,7 @@ include ../../core/ui/layout/value-slider/value-slider.pug
 
 mixin header()
   .header
+  .header__top-wrapper
     h0.header__title marketplace
     +input-field({
       id: "search",
@@ -11,6 +12,7 @@ mixin header()
       placeholder: "Search",
       icon: "Search"
     })
+  .header__bottom-wrapper
     +value-slider({
       title: "Price Range",
       titleTag: "h3",
