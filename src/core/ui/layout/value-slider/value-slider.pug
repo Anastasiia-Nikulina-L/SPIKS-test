@@ -8,9 +8,9 @@ mixin input-number-field(options = {})
         placeholder=options.placeholder,
         value=options.value,
         required=options.required,
-        readonly = true //TODO поискать фикс
+        readonly = true
       )
-
+      
 mixin value-slider(options)
   - options = options || {}
   - const params = options.config ? { ...options.config, ...options } : options
