@@ -1,0 +1,110 @@
+extends ../core/ui/layout/templates/default.pug
+include ../sections/header/header.pug
+include ../sections/side-filter/side-filter.pug
+
+block title
+  | Карта проекта
+
+block workarea
+  +header()
+  +side-filter({
+  groups: [
+    {
+      id: "classification",
+      title: "Classification",
+      isExpanded: true,
+      options: [
+        {
+          id: "vegetables",
+          name: "food-type",
+          label: "Vegetables",
+          checked: false
+        },
+        {
+          id: "carbs",
+          name: "food-type",
+          label: "Carbs",
+          checked: false
+        },
+        {
+          id: "fats",
+          name: "food-type",
+          label: "Fats",
+          checked: false
+        }
+      ]
+    },
+    {
+      id: "delivery-period",
+      title: "Delivery Period",
+      isExpanded: true,
+      options: [
+        {
+          id: "1h",
+          name: "delivery-time",
+          label: "1 h",
+          checked: false
+        },
+        {
+          id: "24h",
+          name: "delivery-time",
+          label: "24 h",
+          checked: false
+        },
+        {
+          id: "today",
+          name: "delivery-time",
+          label: "Today",
+          checked: false
+        },
+        {
+          id: "next week",
+          name: "delivery-time",
+          label: "Next Week",
+          checked: false
+        }
+      ]
+    },
+    {
+      id: "size",
+      title: "Size",
+      isExpanded: true,
+      options: [
+        {
+          id: "huge",
+          name: "size",
+          label: "Huge",
+          checked: false
+        },
+        {
+          id: "large",
+          name: "size",
+          label: "Large",
+          checked: false
+        },
+        {
+          id: "medium",
+          name: "size",
+          label: "Medium",
+          checked: false
+        },
+        {
+          id: "small",
+          name: "size",
+          label: "Small",
+          checked: false
+        },
+        {
+          id: "tiny",
+          name: "size",
+          label: "Tiny",
+          checked: false
+        }
+      ]
+    }
+  ]
+}).food-filters
+
+
+
+  

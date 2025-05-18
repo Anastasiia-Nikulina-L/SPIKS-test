@@ -1,0 +1,28 @@
+include ../../core/ui/layout/input-field/input-field.pug
+include ../../core/ui/layout/value-slider/value-slider.pug
+
+
+mixin header()
+  .header
+    h0.header__title marketplace
+    +input-field({
+      id: "search",
+      name: "search",
+      placeholder: "Search",
+      icon: "Search"
+    })
+    +value-slider({
+      title: "Price Range",
+      titleTag: "h3",
+      config: {
+      handles: 2,
+      minValue: 234,
+      maxValue: 9999,
+      minRange: 234,
+      maxRange: 9999,
+      unit: "$",
+      showInputs: true,
+      showMinInput: true,
+      showMaxInput: true
+    }
+    }).price-filter

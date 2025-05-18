@@ -1,0 +1,23 @@
+@mixin font($weight, $style: normal, $file-name: null) {
+  @font-face {
+    font-family: 'Proxima Nova';
+    src: local('Proxima Nova'),
+         url("../assets/fonts/#{$file-name}.otf") format("opentype"),
+         url("../assets/fonts/#{$file-name}.ttf") format("truetype");
+    font-weight: $weight;
+    font-style: $style;
+    font-display: swap;
+  }
+}
+
+@include font(400, normal, 'proximanova_regular');
+
+@include font(700, normal, 'proximanova_bold');
+@include font(700, italic, 'proximanova_boldit');
+
+@include font(900, normal, 'proximanova_black');
+@include font(900, italic, 'proximanova_blackit');
+
+@include font(300, normal, 'proximanova_light');
+
+@include font(800, normal, 'proximanova_extrabold');

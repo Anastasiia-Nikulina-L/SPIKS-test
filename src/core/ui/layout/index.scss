@@ -1,0 +1,25 @@
+@use '../core/config/scss' as config;
+@use '../core/lib/scss' as lib;
+
+@use '../../../pages/page.scss'; //здесь ничего не делает
+@use '../../../sections/header/header.scss';
+
+.layout {
+  display: flex;
+  min-height: 200vh;
+  flex-direction: column;
+
+  &__header {
+    position: sticky;
+    top: 0;
+  }
+
+
+  &__main {
+    flex-grow: 1;
+  }
+
+  &__footer {
+    margin-top: auto;
+  }
+}

@@ -1,0 +1,15 @@
+include ../input-field/input-field.pug
+
+mixin value-slider(options)
+  .slider-container&attributes(attributes)(data-config=options.config)
+    if options.title
+      #{options.titleTag || 'h3'}.slider-title= options.title
+
+    .slider-track
+
+    if options.showInputs
+      .slider-inputs
+        if options.showMinInput
+          +input-field({}).slider-input.slider-min-input
+        if options.showMaxInput
+          +input-field({}).slider-input.slider-max-input

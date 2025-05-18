@@ -1,0 +1,23 @@
+include ../svg/svg.pug
+
+mixin checkbox(options)
+  -
+    const uid = () => 'cbx-' + Math.random().toString(36).slice(2, 11);
+    
+  .custom-checkbox&attributes(attributes)
+    label.checkbox-label
+      input.checkbox-input(
+        type="checkbox"
+        id=options.id || uid()
+        name=options.name
+        value=options.value
+        required=options.required
+        checked=options.checked
+      )
+      .checkbox-visual
+        .checkbox-frame
+        .checkbox-mark
+          +svg('Checkbox')
+      
+      if options.label
+        span.checkbox-label-text= options.label

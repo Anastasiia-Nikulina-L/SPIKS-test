@@ -1,0 +1,30 @@
+.header {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+	  align-items: center;
+    gap: 16px;
+    margin-bottom: 29px;
+
+  
+    &__title {
+      font-family: 'Proxima Nova', sans-serif;
+      font-weight: 700;
+      font-size: 30px;
+      line-height: 1;
+      letter-spacing: 0.01em;
+      margin: 0;
+      text-transform: lowercase;
+      display: inline-block;
+  
+      &::first-letter {
+        text-transform: uppercase;
+      }
+    }
+  
+    .input-field {
+      display: flex;
+      flex-grow: 1;
+      max-width: 400px;
+    }
+  }

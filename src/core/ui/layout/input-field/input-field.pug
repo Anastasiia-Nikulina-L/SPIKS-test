@@ -1,0 +1,15 @@
+include ../svg/svg.pug
+
+mixin input-field(options = {})
+  .input-field&attributes(attributes)
+    label.input-field__label
+      if options.icon
+        +svg(options.icon).input-field__icon
+      input.input-field__input(
+        type=options.type || "text",
+        id=options.id,
+        name=options.id,
+        placeholder=options.placeholder,
+        value=options.value,
+        required=options.required
+      )

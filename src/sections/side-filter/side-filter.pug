@@ -1,0 +1,33 @@
+include ../../core/ui/layout/checkbox/checkbox.pug
+include ../../core/ui/layout/svg/svg.pug
+
+mixin side-filter(filterData)
+  aside.side-filter&attributes(attributes)
+    .side-filter__container
+      ul.side-filter__groups
+        each group in filterData.groups
+          li.side-filter__group(
+            class= group.isExpanded ? 'is-open' : ''
+            data-group=group.id
+          )
+            button.side-filter__header(
+              type="button"
+              aria-expanded=group.isExpanded ? 'true' : 'false'
+              aria-controls=`filter-group-${group.id}`
+            )
+              span.side-filter__title= group.title
+              span.side-filter__toggle
+                +svg('arrow')
+
+            ul.side-filter__options(
+              id=`filter-group-${group.id}`
+              aria-hidden=group.isExpanded ? 'false' : 'true'
+            )
+              each option in group.options
+                li.side-filter__option
+                  +checkbox({
+                    id: option.id,
+                    name: option.name,
+                    label: option.label,
+                    checked: option.checked
+                  })
