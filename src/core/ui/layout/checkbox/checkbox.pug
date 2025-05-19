@@ -1,23 +1,27 @@
-include ../svg/svg.pug
+mixin svgCheck(name)
+  svg(class="icon-" +name width="15" height="15" viewBox="0 0 15 15" aria-hidden="true")
+    use(href="./assets/icons/default/sprite.svg#" + name)
 
-mixin checkbox(options)
+mixin checkbox(props)
   -
-    const uid = () => 'cbx-' + Math.random().toString(36).slice(2, 11);
-    
-  .custom-checkbox&attributes(attributes)
-    label.checkbox-label
-      input.checkbox-input(
-        type="checkbox"
-        id=options.id || uid()
-        name=options.name
-        value=options.value
-        required=options.required
-        checked=options.checked
-      )
-      .checkbox-visual
-        .checkbox-frame
-        .checkbox-mark
-          +svg('Checkbox')
-      
-      if options.label
-        span.checkbox-label-text= options.label
+    const randomId = (length = 12) => {
+      return Math.random().toString(36).substring(2, length + 2);
+    };
+    const checked = props.checked || false;
+
+  label.checkbox&attributes(attributes)
+    input.checkbox__input(
+      type='checkbox'
+      id=props.hasId && randomId()
+      name=props.name
+      value=props.value
+      required=props.required
+      checked=checked
+    )
+    span.checkbox__box
+      span.checkbox__box-border
+      .checkbox__icon
+        +svgCheck('checkmark')
+
+    if props.label
+      span.checkbox__text= props.label

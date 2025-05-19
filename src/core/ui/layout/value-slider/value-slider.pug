@@ -10,7 +10,7 @@ mixin input-number-field(options = {})
         required=options.required,
         readonly = true
       )
-      
+
 mixin value-slider(options)
   - options = options || {}
   - const params = options.config ? { ...options.config, ...options } : options
@@ -30,6 +30,7 @@ mixin value-slider(options)
     if title
       #{titleTag || 'h3'}.slider-title(class="slider__title")= title
 
+    .slider-default-track
     .slider-track
 
     if showInputs
