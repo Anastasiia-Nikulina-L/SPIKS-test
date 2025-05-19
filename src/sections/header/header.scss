@@ -41,6 +41,7 @@
     gap: 10px;
     display: flex;
     flex-direction: row;
+    flex-wrap: wrap;
     }
 
     .header__subtitle {
@@ -48,5 +49,6 @@
         font-size: 18px;
         line-height: 1.35;
         margin-right: 30px;
+        padding: 3px 0;
       }
       

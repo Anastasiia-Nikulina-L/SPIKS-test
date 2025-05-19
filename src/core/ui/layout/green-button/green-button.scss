@@ -8,13 +8,14 @@
   justify-content: center;
 }
 .green-button_label {
-    font-size: 12px;
-    line-height: 135%;
-    align-items: center;
+  font-size: 12px;
+  line-height: 135%;
+  align-items: center;
+  margin: 0;
 }
-.green-button_close {
+.green-button__close {
 
-      appearance: none;
+  appearance: none;
   -webkit-appearance: none;
   background: none;
   border: none;
@@ -24,7 +25,9 @@
   color: inherit;
   cursor: pointer;
   outline: none;
-      svg {
+  
+  
+  svg {
     display: block;
   }
 }

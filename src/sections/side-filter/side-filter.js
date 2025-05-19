@@ -4,6 +4,7 @@ class SideFilter {
     this.groups = this.filter.querySelectorAll('.side-filter__group');
     this.handleHeaderClick = this.handleHeaderClick.bind(this);
     this.handleHeaderKeydown = this.handleHeaderKeydown.bind(this);
+    this.handleCheckboxChange = this.handleCheckboxChange.bind(this); 
     this.init();
   }
 
@@ -20,7 +21,50 @@ class SideFilter {
         header.addEventListener('keydown', this.handleHeaderKeydown);
       }
     });
+    this.filter.addEventListener('change', this.handleCheckboxChange);
   }
+
+  
+
+    handleCheckboxChange(e) {
+  const checkboxInput = e.target;
+
+  if (checkboxInput.type === 'checkbox' && checkboxInput.classList.contains('checkbox__input') && checkboxInput.closest('.side-filter__option')) {
+    let labelText = 'Unknown Filter';
+
+    const labelWrapper = checkboxInput.closest('label.checkbox');
+
+    if (labelWrapper) {
+      const textElement = labelWrapper.querySelector('.checkbox__text');
+      if (textElement) {
+        labelText = textElement.textContent.trim();
+      } else {
+        console.warn(`span.checkbox__text not found inside label for checkbox id "${checkboxInput.id}"`);
+      }
+    } else {
+      console.warn(`label.checkbox wrapper not found for checkbox id "${checkboxInput.id}"`);
+    }
+
+    const checkboxId = checkboxInput.id;
+
+    if (!checkboxId) {
+      console.error('Checkbox ID is missing from input element!');
+      return;
+    }
+
+    const event = new CustomEvent('filterSelectionChanged', {
+      bubbles: true,
+      detail: {
+        id: checkboxId,
+        name: checkboxInput.name,
+        label: labelText,
+        checked: checkboxInput.checked
+      }
+    });
+    this.filter.dispatchEvent(event);
+    console.log('Dispatched filterSelectionChanged:', { id: checkboxId, label: labelText, checked: checkboxInput.checked }); // DEBUG
+  }
+}
 
   handleHeaderClick(e) {
     const header = e.target.closest('.side-filter__header');
@@ -78,6 +122,15 @@ class SideFilter {
         header.removeEventListener('keydown', this.handleHeaderKeydown);
       }
     });
+  }
+  setCheckboxState(checkboxId, isChecked) {
+    //let checkbox = document.getElementById(checkboxId);
+    const checkbox = this.filter.querySelector(`#${checkboxId}`);
+    if (checkbox) {
+      if (checkbox.checked !== isChecked) {
+        checkbox.checked = isChecked;
+      }
+    }
   }
 }
 

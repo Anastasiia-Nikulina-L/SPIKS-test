@@ -4,15 +4,12 @@ mixin svgCheck(name)
 
 mixin checkbox(props)
   -
-    const randomId = (length = 12) => {
-      return Math.random().toString(36).substring(2, length + 2);
-    };
     const checked = props.checked || false;
 
   label.checkbox&attributes(attributes)
     input.checkbox__input(
       type='checkbox'
-      id=props.hasId && randomId()
+      id='el'+props.label.replace(/\s/g, "")
       name=props.name
       value=props.value
       required=props.required
