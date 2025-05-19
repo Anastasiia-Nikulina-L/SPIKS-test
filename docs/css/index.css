@@ -319,9 +319,9 @@
 }
 
 .nouislider-target .noUi-connect {
-  background: var(--slider-active-bg, #2e7d32);
-  -webkit-box-shadow: 0 3px 15px var(--slider-active-shadow, rgba(46, 125, 50, 0.2));
-  box-shadow: 0 3px 15px var(--slider-active-shadow, rgba(46, 125, 50, 0.2));
+  background: var(--slider-active-bg, rgb(122, 203, 34));
+  -webkit-box-shadow: 0 3px 15px var(--slider-active-shadow, rgba(132, 213, 44, 0.31));
+  box-shadow: 0 3px 15px var(--slider-active-shadow, rgba(132, 213, 44, 0.31));
   border-radius: 3px;
 }
 
@@ -329,9 +329,11 @@
   width: 16px !important;
   height: 16px !important;
   border-radius: 50% !important;
-  background: linear-gradient(193deg, #1b5e20 24%, #43a047 86%) !important;
-  -webkit-box-shadow: inset 3px 5px 12px rgba(255, 255, 255, 0.2), 0 10px 27px rgba(30, 29, 46, 0.3) !important;
-  box-shadow: inset 3px 5px 12px rgba(255, 255, 255, 0.2), 0 10px 27px rgba(30, 29, 46, 0.3) !important;
+  background: linear-gradient(193.42deg, #85D62D 23.76%, #6BAB2B 86.01%) !important;
+  -webkit-box-shadow: 3px 5px 12px 0px rgba(255, 255, 255, 0.2) inset;
+  box-shadow: 3px 5px 12px 0px rgba(255, 255, 255, 0.2) inset;
+  -webkit-box-shadow: 0px 10px 27px 0px rgba(30, 29, 46, 0.3) !important;
+  box-shadow: 0px 10px 27px 0px rgba(30, 29, 46, 0.3) !important;
   border: none !important;
   cursor: -webkit-grab;
   cursor: grab;
