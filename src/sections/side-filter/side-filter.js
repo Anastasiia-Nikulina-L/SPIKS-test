@@ -62,7 +62,6 @@ class SideFilter {
       }
     });
     this.filter.dispatchEvent(event);
-    console.log('Dispatched filterSelectionChanged:', { id: checkboxId, label: labelText, checked: checkboxInput.checked }); // DEBUG
   }
 }
 
@@ -124,7 +123,6 @@ class SideFilter {
     });
   }
   setCheckboxState(checkboxId, isChecked) {
-    //let checkbox = document.getElementById(checkboxId);
     const checkbox = this.filter.querySelector(`#${checkboxId}`);
     if (checkbox) {
       if (checkbox.checked !== isChecked) {
