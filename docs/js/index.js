@@ -1,6 +1,10 @@
 "use strict";
 
 function _typeof(o) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (o) { return typeof o; } : function (o) { return o && "function" == typeof Symbol && o.constructor === Symbol && o !== Symbol.prototype ? "symbol" : typeof o; }, _typeof(o); }
+function _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _unsupportedIterableToArray(arr, i) || _nonIterableRest(); }
+function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
+function _iterableToArrayLimit(r, l) { var t = null == r ? null : "undefined" != typeof Symbol && r[Symbol.iterator] || r["@@iterator"]; if (null != t) { var e, n, i, u, a = [], f = !0, o = !1; try { if (i = (t = t.call(r)).next, 0 === l) { if (Object(t) !== t) return; f = !1; } else for (; !(f = (e = i.call(t)).done) && (a.push(e.value), a.length !== l); f = !0); } catch (r) { o = !0, n = r; } finally { try { if (!f && null != t["return"] && (u = t["return"](), Object(u) !== u)) return; } finally { if (o) throw n; } } return a; } }
+function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, _toPropertyKey(descriptor.key), descriptor); } }
 function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); Object.defineProperty(Constructor, "prototype", { writable: false }); return Constructor; }
@@ -151,10 +155,10 @@ function _toPrimitive(input, hint) { if (_typeof(input) !== "object" || input ==
     function DualValueSlider(container) {
       _classCallCheck(this, DualValueSlider);
       this.container = container;
+      this.sliderId = container.id || "slider-".concat(Math.random().toString(36).substr(2, 9));
       this.track = container.querySelector('.slider-track');
       this.minInputField = container.querySelector('.slider-min-input input');
       this.maxInputField = container.querySelector('.slider-max-input input');
-      this.valueFields = [this.minInputField, this.maxInputField].filter(Boolean);
       this.minHandle = null;
       this.maxHandle = null;
       this.fill = null;
@@ -164,41 +168,70 @@ function _toPrimitive(input, hint) { if (_typeof(input) !== "object" || input ==
       this.initialize();
     }
     _createClass(DualValueSlider, [{
+      key: "_log",
+      value: function _log(message) {}
+    }, {
       key: "initialize",
       value: function initialize() {
-        if (!this.track) return;
+        if (!this.track) {
+          console.error("[".concat(this.sliderId, "] [INITIALIZE] Slider track not found. Aborting."));
+          return;
+        }
         var configData = JSON.parse(this.container.dataset.config || '{}');
+        this._log("[INITIALIZE] Raw data-config: ".concat(JSON.stringify(configData)));
         this.config = {
           minRange: typeof configData.minRange === 'number' ? configData.minRange : 0,
           maxRange: typeof configData.maxRange === 'number' ? configData.maxRange : 100,
           unit: configData.unit || '',
-          showInputs: configData.showInputs || false,
+          showInputs: !!configData.showInputs,
           isSingleHandle: configData.handles === 1
         };
-        this.config.minValue = typeof configData.minValue === 'number' ? configData.minValue : this.config.minRange;
-        this.config.maxValue = typeof configData.maxValue === 'number' ? configData.maxValue : this.config.maxRange;
+        this._log("[INITIALIZE] Parsed base config: isSingleHandle=".concat(this.config.isSingleHandle, ", minRange=").concat(this.config.minRange, ", maxRange=").concat(this.config.maxRange, ", unit='").concat(this.config.unit, "', showInputs=").concat(this.config.showInputs));
+        var initialMinFromData = typeof configData.minValue === 'number' ? configData.minValue : this.config.minRange;
+        var initialMaxFromData = typeof configData.maxValue === 'number' ? configData.maxValue : this.config.maxRange;
         if (this.config.isSingleHandle) {
-          if (this.minInputField && !this.maxInputField) {
-            this.config.maxValue = this.config.maxRange;
-          } else if (!this.minInputField && this.maxInputField) {
-            this.config.minValue = typeof configData.maxValue === 'number' ? configData.maxValue : this.config.maxRange;
-            this.config.maxValue = this.config.maxRange;
+          this._log('[INITIALIZE] Mode: Single Handle');
+          if (configData.showMinInput && !configData.showMaxInput) {
+            this.config.minValue = initialMinFromData;
+          } else if (!configData.showMinInput && configData.showMaxInput) {
+            this.config.minValue = initialMaxFromData;
+          } else {
+            this.config.minValue = initialMinFromData;
           }
+          this.config.minValue = Math.max(this.config.minRange, Math.min(this.config.maxRange, this.config.minValue));
+          this.config.maxValue = this.config.maxRange;
+          this._log("[INITIALIZE] Single handle config values set: minValue=".concat(this.config.minValue, ", maxValue=").concat(this.config.maxValue, " (derived from maxRange)"));
+        } else {
+          this._log('[INITIALIZE] Mode: Dual Handle');
+          this.config.minValue = initialMinFromData;
+          this.config.maxValue = initialMaxFromData;
+          this.config.minValue = Math.max(this.config.minRange, Math.min(this.config.maxRange, this.config.minValue));
+          this.config.maxValue = Math.max(this.config.minRange, Math.min(this.config.maxRange, this.config.maxValue));
+          if (this.config.minValue > this.config.maxValue) {
+            this._log("[INITIALIZE] Initial min (".concat(this.config.minValue, ") > max (").concat(this.config.maxValue, "). Swapping."));
+            var _ref = [this.config.maxValue, this.config.minValue];
+            this.config.minValue = _ref[0];
+            this.config.maxValue = _ref[1];
+          }
+          this._log("[INITIALIZE] Dual handle config values set: minValue=".concat(this.config.minValue, ", maxValue=").concat(this.config.maxValue));
         }
         this.createSliderElements();
         this.setupEvents();
-        this.updateSliderValues([this.config.minValue, this.config.maxValue]);
+        this._log('[INITIALIZE] Calling _updateConfigAndDOM to set initial state.');
+        this._updateConfigAndDOM([this.config.minValue, this.config.isSingleHandle ? this.config.maxRange : this.config.maxValue]);
         if (this.config.showInputs) {
-          this.updateInputFields();
           this.setupValueSync();
         }
+        this._log('[INITIALIZE] Initialization complete.');
       }
     }, {
       key: "createSliderElements",
       value: function createSliderElements() {
+        this._log('[CREATE_ELEMENTS] Creating fill...');
         this.fill = document.createElement('div');
         this.fill.className = 'slider-fill';
         this.track.appendChild(this.fill);
+        this._log('[CREATE_ELEMENTS] Creating minHandle...');
         this.minHandle = document.createElement('div');
         this.minHandle.className = 'slider-handle slider-handle-min';
         this.minHandle.setAttribute('data-handle', 'min');
@@ -207,7 +240,8 @@ function _toPrimitive(input, hint) { if (_typeof(input) !== "object" || input ==
         minTooltip.className = 'slider-tooltip';
         minTooltip.style.display = 'none';
         this.minHandle.appendChild(minTooltip);
-        if (!this.config.isSingleHandle && this.maxInputField) {
+        if (!this.config.isSingleHandle) {
+          this._log('[CREATE_ELEMENTS] Creating maxHandle for dual slider...');
           this.maxHandle = document.createElement('div');
           this.maxHandle.className = 'slider-handle slider-handle-max';
           this.maxHandle.setAttribute('data-handle', 'max');
@@ -217,74 +251,184 @@ function _toPrimitive(input, hint) { if (_typeof(input) !== "object" || input ==
           maxTooltip.style.display = 'none';
           this.maxHandle.appendChild(maxTooltip);
         }
+        this._log('[CREATE_ELEMENTS] Elements created.');
+      }
+    }, {
+      key: "_updateConfigAndDOM",
+      value: function _updateConfigAndDOM(newValues) {
+        var source = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
+        var _newValues$map = newValues.map(function (v) {
+            return parseFloat(v);
+          }),
+          _newValues$map2 = _slicedToArray(_newValues$map, 2),
+          newMin = _newValues$map2[0],
+          newMaxAttempt = _newValues$map2[1];
+        this._log("[_UPDATE_CONFIG_AND_DOM] Source: ".concat(source, ". Incoming values: newMin=").concat(newMin, ", newMaxAttempt=").concat(newMaxAttempt, ". Current config BEFORE: min=").concat(this.config.minValue, ", max=").concat(this.config.maxValue));
+        newMin = Math.max(this.config.minRange, Math.min(this.config.maxRange, newMin));
+        if (this.config.isSingleHandle) {
+          this.config.minValue = newMin;
+          this._log("[_UPDATE_CONFIG_AND_DOM] Single Handle: Config updated. minValue=".concat(this.config.minValue));
+        } else {
+          var newMax = newMaxAttempt;
+          newMax = Math.max(this.config.minRange, Math.min(this.config.maxRange, newMax));
+          if (source === 'minInput' || source === 'minDrag') {
+            if (newMin > newMax) {
+              this._log("[_UPDATE_CONFIG_AND_DOM] Min change caused potential crossover: newMin (".concat(newMin, ") > newMax (").concat(newMax, "). Setting newMin = newMax."));
+              newMin = newMax;
+            }
+          } else if (source === 'maxInput' || source === 'maxDrag') {
+            if (newMax < newMin) {
+              this._log("[_UPDATE_CONFIG_AND_DOM] Max change caused potential crossover: newMax (".concat(newMax, ") < newMin (").concat(newMin, "). Setting newMax = newMin."));
+              newMax = newMin;
+            }
+          } else {
+            if (newMin > newMax) {
+              this._log("[_UPDATE_CONFIG_AND_DOM] General crossover or init: newMin (".concat(newMin, ") > newMax (").concat(newMax, "). Setting newMin = newMax (min is weaker)."));
+              newMin = newMax;
+            }
+          }
+          this.config.minValue = newMin;
+          this.config.maxValue = newMax;
+          this._log("[_UPDATE_CONFIG_AND_DOM] Dual Handle: Config updated. minValue=".concat(this.config.minValue, ", maxValue=").concat(this.config.maxValue));
+        }
+        this._updateSliderDOMOnly();
+        if (this.config.showInputs) {
+          this._log("[_UPDATE_CONFIG_AND_DOM] Calling updateInputFields.");
+          this.updateInputFields();
+        }
+        this._log("[_UPDATE_CONFIG_AND_DOM] Update cycle finished.");
+      }
+    }, {
+      key: "_updateSliderDOMOnly",
+      value: function _updateSliderDOMOnly() {
+        this._log("[_UPDATE_SLIDER_DOM_ONLY] Updating slider visuals. config.minValue=".concat(this.config.minValue, ", config.maxValue=").concat(this.config.maxValue));
+        this.updateHandlePosition(this.minHandle, this.config.minValue);
+        if (this.maxHandle) {
+          this.updateHandlePosition(this.maxHandle, this.config.maxValue);
+        }
+        this.updateFill();
+        this.updateTooltips();
+      }
+    }, {
+      key: "updateHandlePosition",
+      value: function updateHandlePosition(handleElement, value) {
+        if (!handleElement) return;
+        var range = this.config.maxRange - this.config.minRange;
+        var positionPercent = range === 0 ? 0 : (parseFloat(value) - this.config.minRange) / range * 100;
+        handleElement.style.left = "".concat(Math.max(0, Math.min(100, positionPercent)), "%");
+        this._log("[UPDATE_HANDLE_POS] Handle ".concat(handleElement.dataset.handle || 'min', " set to ").concat(positionPercent, "% for value ").concat(value));
+      }
+    }, {
+      key: "updateFill",
+      value: function updateFill() {
+        var minVal = parseFloat(this.config.minValue);
+        var maxValForFill = this.maxHandle ? parseFloat(this.config.maxValue) : minVal;
+        var range = this.config.maxRange - this.config.minRange;
+        if (range === 0) {
+          this.fill.style.left = '0%';
+          this.fill.style.width = '0%';
+          this._log('[UPDATE_FILL] Range is 0. Fill set to 0% width.');
+          return;
+        }
+        var minPosPercent = (minVal - this.config.minRange) / range * 100;
+        minPosPercent = Math.max(0, Math.min(100, minPosPercent));
+        if (this.maxHandle) {
+          var maxPosPercent = (maxValForFill - this.config.minRange) / range * 100;
+          maxPosPercent = Math.max(0, Math.min(100, maxPosPercent));
+          this.fill.style.left = "".concat(minPosPercent, "%");
+          this.fill.style.width = "".concat(Math.max(0, maxPosPercent - minPosPercent), "%");
+          this._log("[UPDATE_FILL] Dual: left=".concat(minPosPercent, "%, width=").concat(Math.max(0, maxPosPercent - minPosPercent), "%"));
+        } else {
+          this.fill.style.left = "0%";
+          this.fill.style.width = "".concat(minPosPercent, "%");
+          this._log("[UPDATE_FILL] Single: left=0%, width=".concat(minPosPercent, "%"));
+        }
+      }
+    }, {
+      key: "updateTooltips",
+      value: function updateTooltips() {
+        var _this = this;
+        var format = function format(val) {
+          return "".concat(Math.round(parseFloat(val))).concat(_this.config.unit || '');
+        };
+        if (this.minHandle) {
+          var tt = this.minHandle.querySelector('.slider-tooltip');
+          if (tt) tt.textContent = format(this.config.minValue);
+        }
+        if (this.maxHandle) {
+          var _tt = this.maxHandle.querySelector('.slider-tooltip');
+          if (_tt) _tt.textContent = format(this.config.maxValue);
+        }
+        this._log('[UPDATE_TOOLTIPS] Tooltips updated.');
       }
     }, {
       key: "setupEvents",
       value: function setupEvents() {
-        var _this = this;
+        var _this2 = this;
         this.minHandle.addEventListener('mousedown', function (e) {
-          return _this.startDrag(e, _this.minHandle);
+          return _this2.startDrag(e, _this2.minHandle);
         });
         if (this.maxHandle) {
           this.maxHandle.addEventListener('mousedown', function (e) {
-            return _this.startDrag(e, _this.maxHandle);
+            return _this2.startDrag(e, _this2.maxHandle);
           });
         }
         document.addEventListener('mousemove', function (e) {
-          return _this.handleDrag(e);
+          return _this2.handleDrag(e);
         });
         document.addEventListener('mouseup', function () {
-          return _this.stopDrag();
+          return _this2.stopDrag();
         });
         this.minHandle.addEventListener('touchstart', function (e) {
-          return _this.startDrag(e, _this.minHandle);
+          return _this2.startDrag(e, _this2.minHandle);
         }, {
           passive: false
         });
         if (this.maxHandle) {
           this.maxHandle.addEventListener('touchstart', function (e) {
-            return _this.startDrag(e, _this.maxHandle);
+            return _this2.startDrag(e, _this2.maxHandle);
           }, {
             passive: false
           });
         }
         document.addEventListener('touchmove', function (e) {
-          return _this.handleDrag(e);
+          return _this2.handleDrag(e);
         }, {
           passive: false
         });
         document.addEventListener('touchend', function () {
-          return _this.stopDrag();
+          return _this2.stopDrag();
         });
         this.minHandle.addEventListener('mouseenter', function () {
-          return _this.showTooltip(_this.minHandle);
+          return _this2.showTooltip(_this2.minHandle);
         });
         this.minHandle.addEventListener('mouseleave', function () {
-          if (!_this.isDragging || _this.currentHandle !== _this.minHandle) _this.hideTooltip(_this.minHandle);
+          if (!_this2.isDragging || _this2.currentHandle !== _this2.minHandle) _this2.hideTooltip(_this2.minHandle);
         });
         if (this.maxHandle) {
           this.maxHandle.addEventListener('mouseenter', function () {
-            return _this.showTooltip(_this.maxHandle);
+            return _this2.showTooltip(_this2.maxHandle);
           });
           this.maxHandle.addEventListener('mouseleave', function () {
-            if (!_this.isDragging || _this.currentHandle !== _this.maxHandle) _this.hideTooltip(_this.maxHandle);
+            if (!_this2.isDragging || _this2.currentHandle !== _this2.maxHandle) _this2.hideTooltip(_this2.maxHandle);
           });
         }
+        this._log('[SETUP_EVENTS] Event listeners for handles and document set up.');
       }
     }, {
       key: "showTooltip",
       value: function showTooltip(handleElement) {
-        var tooltip = handleElement.querySelector('.slider-tooltip');
-        if (tooltip) {
-          tooltip.style.display = 'block';
+        if (handleElement) {
+          var tt = handleElement.querySelector('.slider-tooltip');
+          if (tt) tt.style.display = 'block';
         }
       }
     }, {
       key: "hideTooltip",
       value: function hideTooltip(handleElement) {
-        var tooltip = handleElement.querySelector('.slider-tooltip');
-        if (tooltip) {
-          tooltip.style.display = 'none';
+        if (handleElement) {
+          var tt = handleElement.querySelector('.slider-tooltip');
+          if (tt) tt.style.display = 'none';
         }
       }
     }, {
@@ -294,176 +438,146 @@ function _toPrimitive(input, hint) { if (_typeof(input) !== "object" || input ==
         this.isDragging = true;
         this.currentHandle = handleElement;
         this.showTooltip(this.currentHandle);
-        this.minHandle.style.zIndex = this.currentHandle === this.minHandle ? '10' : '1';
+        this.minHandle.style.zIndex = this.currentHandle === this.minHandle ? '10' : '2';
         if (this.maxHandle) {
-          this.maxHandle.style.zIndex = this.currentHandle === this.maxHandle ? '10' : '1';
+          this.maxHandle.style.zIndex = this.currentHandle === this.maxHandle ? '10' : '2';
         }
-      }
-    }, {
-      key: "handleDrag",
-      value: function handleDrag(e) {
-        if (!this.isDragging || !this.currentHandle) return;
-        e.preventDefault();
-        var clientX = e.clientX || e.touches && e.touches[0].clientX;
-        if (typeof clientX === 'undefined') return;
-        var trackRect = this.track.getBoundingClientRect();
-        var position = (clientX - trackRect.left) / trackRect.width;
-        position = Math.max(0, Math.min(1, position));
-        var value = this.config.minRange + position * (this.config.maxRange - this.config.minRange);
-        value = Math.round(value);
-        var handleType = this.currentHandle.dataset.handle;
-        if (handleType === 'min') {
-          var currentMaxValue = this.maxHandle ? this.getHandleValue(this.maxHandle) : this.config.maxRange;
-          var newValue = Math.min(value, currentMaxValue);
-          this.updateHandlePosition(this.minHandle, newValue);
-          this.config.minValue = newValue;
-        } else if (handleType === 'max' && this.maxHandle) {
-          var currentMinValue = this.getHandleValue(this.minHandle);
-          var _newValue = Math.max(value, currentMinValue);
-          this.updateHandlePosition(this.maxHandle, _newValue);
-          this.config.maxValue = _newValue;
-        }
-        this.updateFill();
-        this.updateTooltips();
-        if (this.config.showInputs) {
-          this.updateInputFields();
-        }
+        this._log("[START_DRAG] Drag started on handle: ".concat(handleElement.dataset.handle));
       }
     }, {
       key: "stopDrag",
       value: function stopDrag() {
         if (!this.isDragging) return;
+        this._log("[STOP_DRAG] Drag stopped. Current handle: ".concat(this.currentHandle ? this.currentHandle.dataset.handle : 'none'));
         this.isDragging = false;
         if (this.currentHandle) {
           this.hideTooltip(this.currentHandle);
-          this.minHandle.style.zIndex = '1';
-          if (this.maxHandle) this.maxHandle.style.zIndex = '1';
+          this.minHandle.style.zIndex = '2';
+          if (this.maxHandle) this.maxHandle.style.zIndex = '2';
         }
         this.currentHandle = null;
       }
     }, {
-      key: "getHandleValue",
-      value: function getHandleValue(handleElement) {
-        if (!handleElement || !handleElement.style.left) {
-          if (handleElement === this.minHandle) return this.config.minValue;
-          if (handleElement === this.maxHandle) return this.config.maxValue;
-          return 0;
+      key: "handleDrag",
+      value: function handleDrag(e) {
+        if (!this.isDragging || !this.currentHandle) return;
+        var clientX = e.clientX || e.touches && e.touches[0].clientX;
+        if (typeof clientX === 'undefined') return;
+        var trackRect = this.track.getBoundingClientRect();
+        var range = this.config.maxRange - this.config.minRange;
+        var positionPercent = (clientX - trackRect.left) / trackRect.width;
+        positionPercent = Math.max(0, Math.min(1, positionPercent));
+        var valueFromPos = this.config.minRange + positionPercent * (range === 0 ? 0 : range);
+        var newCalculatedMin = parseFloat(this.config.minValue);
+        var newCalculatedMax = this.config.isSingleHandle ? parseFloat(this.config.maxRange) : parseFloat(this.config.maxValue);
+        var sourceOfChange = null;
+        if (this.currentHandle.dataset.handle === 'min') {
+          newCalculatedMin = valueFromPos;
+          sourceOfChange = 'minDrag';
+        } else if (this.currentHandle.dataset.handle === 'max' && this.maxHandle) {
+          newCalculatedMax = valueFromPos;
+          sourceOfChange = 'maxDrag';
         }
-        var posPercent = parseFloat(handleElement.style.left);
-        if (isNaN(posPercent)) {
-          if (handleElement === this.minHandle) return this.config.minValue;
-          if (handleElement === this.maxHandle) return this.config.maxValue;
-          return 0;
-        }
-        return this.config.minRange + posPercent / 100 * (this.config.maxRange - this.config.minRange);
-      }
-    }, {
-      key: "updateHandlePosition",
-      value: function updateHandlePosition(handleElement, value) {
-        var positionPercent = (value - this.config.minRange) / (this.config.maxRange - this.config.minRange) * 100;
-        handleElement.style.left = "".concat(Math.max(0, Math.min(100, positionPercent)), "%");
-      }
-    }, {
-      key: "updateFill",
-      value: function updateFill() {
-        var minPosPercent = parseFloat(this.minHandle.style.left) || 0;
-        var maxPosPercent = this.maxHandle ? parseFloat(this.maxHandle.style.left) || 100 : 100;
-        this.fill.style.left = "".concat(minPosPercent, "%");
-        this.fill.style.width = "".concat(maxPosPercent - minPosPercent, "%");
-      }
-    }, {
-      key: "updateTooltips",
-      value: function updateTooltips() {
-        var _this2 = this;
-        var formatValue = function formatValue(val) {
-          return "".concat(Math.round(val)).concat(_this2.config.unit ? _this2.config.unit : '');
-        };
-        var minTooltipEl = this.minHandle.querySelector('.slider-tooltip');
-        if (minTooltipEl) minTooltipEl.textContent = formatValue(this.getHandleValue(this.minHandle));
-        if (this.maxHandle) {
-          var maxTooltipEl = this.maxHandle.querySelector('.slider-tooltip');
-          if (maxTooltipEl) maxTooltipEl.textContent = formatValue(this.getHandleValue(this.maxHandle));
-        }
-      }
-    }, {
-      key: "updateSliderValues",
-      value: function updateSliderValues(values) {
-        var newMin = values[0];
-        var newMax = values.length > 1 ? values[1] : this.config.maxRange;
-        newMin = Math.max(this.config.minRange, Math.min(this.config.maxRange, newMin));
-        if (this.maxHandle) {
-          newMax = Math.max(this.config.minRange, Math.min(this.config.maxRange, newMax));
-          if (newMin > newMax) newMin = newMax;
-        } else {}
-        this.config.minValue = newMin;
-        this.updateHandlePosition(this.minHandle, this.config.minValue);
-        if (this.maxHandle) {
-          this.config.maxValue = newMax;
-          this.updateHandlePosition(this.maxHandle, this.config.maxValue);
-        }
-        this.updateFill();
-        this.updateTooltips();
-        if (this.config.showInputs) {
-          this.updateInputFields();
-        }
+        this._log("[HANDLE_DRAG] Source: ".concat(sourceOfChange, ", Calculated values: min=").concat(newCalculatedMin, ", max=").concat(newCalculatedMax));
+        this._updateConfigAndDOM([newCalculatedMin, newCalculatedMax], sourceOfChange);
       }
     }, {
       key: "setupValueSync",
       value: function setupValueSync() {
         var _this3 = this;
-        this.valueFields.forEach(function (inputField) {
-          if (!inputField) return;
-          inputField.addEventListener('input', function () {
-            _this3.adjustInputWidth(inputField);
-          });
+        this._log('[SETUP_VALUE_SYNC] Setting up listeners for inputs.');
+        var inputsToSync = [];
+        if (this.minInputField) inputsToSync.push(this.minInputField);
+        if (this.maxInputField) inputsToSync.push(this.maxInputField);
+        inputsToSync.forEach(function (inputField) {
+          inputField.addEventListener('blur', function () {});
+          inputField.addEventListener('input', function () {});
           inputField.addEventListener('change', function (event) {
             var targetInput = event.target;
-            var numericValue = parseFloat(targetInput.value.replace(/[^\d.-]/g, ''));
-            if (isNaN(numericValue)) {
+            var parentSliderInput = targetInput.closest('.slider-input');
+            var inputType = null;
+            if (parentSliderInput && parentSliderInput.dataset.type) {
+              inputType = parentSliderInput.dataset.type;
+            } else if (targetInput.id.toLowerCase().includes('min-input')) {
+              inputType = 'min';
+            } else if (targetInput.id.toLowerCase().includes('max-input')) {
+              inputType = 'max';
+            }
+            _this3._log("[INPUT_CHANGE] Event on input: type='".concat(inputType, "', raw value: '").concat(targetInput.value, "'"));
+            if (!inputType) {
+              _this3._log('[INPUT_CHANGE] ERROR: Could not determine input type (min/max). Aborting change.');
               _this3.updateInputFields();
               return;
             }
-            var inputType = targetInput.dataset.type;
-            var currentMin = _this3.getHandleValue(_this3.minHandle);
-            var currentMax = _this3.maxHandle ? _this3.getHandleValue(_this3.maxHandle) : _this3.config.maxRange;
-            if (inputType === 'min') {
-              numericValue = Math.max(_this3.config.minRange, Math.min(numericValue, currentMax));
-              _this3.config.minValue = numericValue;
-              if (_this3.config.isSingleHandle && !_this3.maxHandle) {
-                _this3.updateSliderValues([_this3.config.minValue, _this3.config.maxRange]);
-              } else {
-                _this3.updateSliderValues([_this3.config.minValue, currentMax]);
-              }
-            } else if (inputType === 'max' && _this3.maxHandle) {
-              numericValue = Math.max(currentMin, Math.min(numericValue, _this3.config.maxRange));
-              _this3.config.maxValue = numericValue;
-              _this3.updateSliderValues([currentMin, _this3.config.maxValue]);
+            var numericString = targetInput.value.replace(/[^0-9.-]/g, '');
+            var numericValue = parseFloat(numericString);
+            if (isNaN(numericValue)) {
+              return;
             }
+            _this3._log("[INPUT_CHANGE] Parsed numericValue: ".concat(numericValue));
+            var finalNewMin = parseFloat(_this3.config.minValue);
+            var finalNewMax = _this3.config.isSingleHandle ? parseFloat(_this3.config.maxRange) : parseFloat(_this3.config.maxValue);
+            var sourceOfChange = null;
+            if (_this3.config.isSingleHandle) {
+              finalNewMin = numericValue;
+              sourceOfChange = inputType === 'min' ? 'minInput' : 'maxInput';
+              _this3._log("[INPUT_CHANGE] Single Handle: finalNewMin from input: ".concat(finalNewMin, ", source: ").concat(sourceOfChange));
+            } else {
+              if (inputType === 'min') {
+                finalNewMin = numericValue;
+                sourceOfChange = 'minInput';
+                _this3._log("[INPUT_CHANGE] Dual Handle (min input): newMinAttempt=".concat(finalNewMin, ". Current config.maxValue=").concat(finalNewMax, ". Source: ").concat(sourceOfChange));
+              } else {
+                finalNewMax = numericValue;
+                sourceOfChange = 'maxInput';
+                _this3._log("[INPUT_CHANGE] Dual Handle (max input): newMaxAttempt=".concat(finalNewMax, ". Current config.minValue=").concat(finalNewMin, ". Source: ").concat(sourceOfChange));
+              }
+            }
+            _this3._log("[INPUT_CHANGE] Values to pass to _updateConfigAndDOM: min=".concat(finalNewMin, ", max=").concat(finalNewMax, ", source=").concat(sourceOfChange));
+            _this3._updateConfigAndDOM([finalNewMin, finalNewMax], sourceOfChange);
           });
         });
       }
     }, {
       key: "updateInputFields",
       value: function updateInputFields() {
-        var _this4 = this;
         if (!this.config.showInputs) return;
+        this._log("[UPDATE_INPUT_FIELDS] Updating inputs. Config: min=".concat(this.config.minValue, ", max=").concat(this.config.maxValue, ", unit='").concat(this.config.unit, "'"));
+        var currentUnit = this.config.unit || '';
         var formatValue = function formatValue(val) {
-          return "".concat(Math.round(val)).concat(_this4.config.unit ? '' + _this4.config.unit : '');
+          return "".concat(Math.round(parseFloat(val))).concat(currentUnit);
         };
         if (this.minInputField) {
-          this.minInputField.value = formatValue(this.getHandleValue(this.minHandle));
+          this.minInputField.value = formatValue(this.config.minValue);
           this.adjustInputWidth(this.minInputField);
+          this._log("[UPDATE_INPUT_FIELDS] Min input set to: '".concat(this.minInputField.value, "'"));
         }
-        if (this.maxInputField && this.maxHandle) {
-          this.maxInputField.value = formatValue(this.getHandleValue(this.maxHandle));
-          this.adjustInputWidth(this.maxInputField);
+        if (this.maxInputField) {
+          var valueForMaxInput;
+          if (!this.config.isSingleHandle) {
+            valueForMaxInput = this.config.maxValue;
+          } else {
+            if (!this.minInputField || !this.container.querySelector('.slider-min-input')) {
+              if (this.container.querySelector('.slider-max-input')) {
+                valueForMaxInput = this.config.minValue;
+              }
+            }
+          }
+          if (typeof valueForMaxInput !== 'undefined') {
+            this.maxInputField.value = formatValue(valueForMaxInput);
+            this.adjustInputWidth(this.maxInputField);
+            this._log("[UPDATE_INPUT_FIELDS] Max input set to: '".concat(this.maxInputField.value, "'"));
+          } else {
+            this._log('[UPDATE_INPUT_FIELDS] Max input not updated (valueForMaxInput is undefined for current config).');
+          }
         }
       }
     }, {
       key: "adjustInputWidth",
       value: function adjustInputWidth(input) {
         if (input) {
-          input.size = Math.max(3, input.value.length || input.placeholder.length || 3);
+          var length = Math.max(1, input.value.length || (input.placeholder ? input.placeholder.length : 0) || 1);
+          input.style.width = "".concat(Math.max(1.5, length * 0.65), "em");
         }
       }
     }]);
@@ -516,12 +630,12 @@ var SideFilter = /*#__PURE__*/function () {
   }, {
     key: "setupEventListeners",
     value: function setupEventListeners() {
-      var _this5 = this;
+      var _this4 = this;
       this.filter.addEventListener('click', this.handleHeaderClick);
       this.groups.forEach(function (group) {
         var header = group.querySelector('.side-filter__header');
         if (header) {
-          header.addEventListener('keydown', _this5.handleHeaderKeydown);
+          header.addEventListener('keydown', _this4.handleHeaderKeydown);
         }
       });
       this.filter.addEventListener('change', this.handleCheckboxChange);
@@ -558,11 +672,6 @@ var SideFilter = /*#__PURE__*/function () {
           }
         });
         this.filter.dispatchEvent(event);
-        console.log('Dispatched filterSelectionChanged:', {
-          id: checkboxId,
-          label: labelText,
-          checked: checkboxInput.checked
-        }); // DEBUG
       }
     }
   }, {
@@ -617,19 +726,18 @@ var SideFilter = /*#__PURE__*/function () {
   }, {
     key: "destroy",
     value: function destroy() {
-      var _this6 = this;
+      var _this5 = this;
       this.filter.removeEventListener('click', this.handleHeaderClick);
       this.groups.forEach(function (group) {
         var header = group.querySelector('.side-filter__header');
         if (header) {
-          header.removeEventListener('keydown', _this6.handleHeaderKeydown);
+          header.removeEventListener('keydown', _this5.handleHeaderKeydown);
         }
       });
     }
   }, {
     key: "setCheckboxState",
     value: function setCheckboxState(checkboxId, isChecked) {
-      //let checkbox = document.getElementById(checkboxId);
       var checkbox = this.filter.querySelector("#".concat(checkboxId));
       if (checkbox) {
         if (checkbox.checked !== isChecked) {
