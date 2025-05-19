@@ -6,10 +6,12 @@
 	    align-items: center;
       gap: 16px;
       margin-bottom: 29px;
+      padding-left: 7px;
     }
 
     &__bottom-wrapper {
       margin-bottom: 30px;
+      padding-left: 7px;
     }
   
     &__title {
@@ -33,3 +35,18 @@
       max-width: 400px;
     }
   }
+
+  .header__filter-buttons {
+    margin-top: 15px;
+    gap: 10px;
+    display: flex;
+    flex-direction: row;
+    }
+
+    .header__subtitle {
+        font-weight: 600;
+        font-size: 18px;
+        line-height: 1.35;
+        margin-right: 30px;
+      }
+      

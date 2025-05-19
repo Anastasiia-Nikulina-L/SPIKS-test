@@ -1,5 +1,8 @@
 include ../../core/ui/layout/checkbox/checkbox.pug
-include ../../core/ui/layout/svg/svg.pug
+
+mixin svgFilter(name)
+  svg(class="icon-" +name width="12" height="7" viewBox="0 0 12 7" aria-hidden="true")
+    use(href="./assets/icons/default/sprite.svg#" + name)
 
 mixin side-filter(filterData)
   aside.side-filter&attributes(attributes)
@@ -17,7 +20,7 @@ mixin side-filter(filterData)
             )
               span.side-filter__title= group.title
               span.side-filter__toggle
-                +svg('arrow') 
+                +svgFilter('Arrow') 
 
             ul.side-filter__options(
               id=`filter-group-${group.id}`

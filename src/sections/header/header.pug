@@ -1,11 +1,12 @@
 include ../../core/ui/layout/input-field/input-field.pug
 include ../../core/ui/layout/value-slider/value-slider.pug
+include ../../core/ui/layout/green-button/green-button.pug
 
 
 mixin header()
   .header
   .header__top-wrapper
-    h0.header__title marketplace
+    h1.header__title marketplace
     +input-field({
       id: "search",
       name: "search",
@@ -28,3 +29,6 @@ mixin header()
       showMaxInput: true
     }
     }).price-filter
+    .header__filter-buttons 
+      h2.header__subtitle 1034,5 Results
+      +green-button("текст1")

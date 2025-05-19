@@ -7,6 +7,7 @@
 @use '../core/ui/layout/checkbox/checkbox';
 @use '../core/ui/layout/value-slider/value-slider';
 @use '../sections/side-filter/side-filter';
+@use '../core/ui/layout/green-button/green-button';
 
 * {
   font-family: inherit;
@@ -58,7 +59,7 @@ html {
   font-size: 16px;
   font-family: monospace;
   background-color: rgba(23, 23, 34, 1);
-  padding: 22px 35px;
+  padding: 22px 28px;
 }
 
 
