@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="ru">
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="css/index.css">
+  <title>Карта проекта
+  </title>
+  <body>
+    <div class="layout">
+      <div class="layout__header">
+      </div>
+      <div class="layout__main">
+        <div class="header"></div>
+        <div class="header__top-wrapper">
+          <h1 class="header__title">marketplace</h1>
+          <div class="input-field">
+            <label class="input-field__label">
+              <svg class="icon-Search" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true">
+                <use href="./assets/icons/default/sprite.svg#Search"></use>
+              </svg>
+              <input class="input-field__input" type="text" id="search" name="search" placeholder="Search"/>
+            </label>
+          </div>
+        </div>
+        <div class="header__bottom-wrapper">
+          <div class="slider-container price-filter" data-config="{&quot;minRange&quot;:234,&quot;maxRange&quot;:9999,&quot;unit&quot;:&quot; $&quot;,&quot;minValue&quot;:234,&quot;maxValue&quot;:9999,&quot;showInputs&quot;:true,&quot;handles&quot;:2}">
+            <h3 class="slider-title slider__title">Price Range</h3>
+            <div class="slider-default-track"></div>
+            <div class="slider-track"></div>
+            <div class="slider-inputs">
+              <div class="input-number-field slider-input slider-min-input">
+                <label class="input-number-field__label">
+                  <input class="input-number-field__input" type="text" id="min-input-ois3kndgm" name="min-input-ois3kndgm" placeholder="" value="234" readonly="readonly"/>
+                </label>
+              </div>
+              <div class="input-number-field slider-input slider-max-input">
+                <label class="input-number-field__label">
+                  <input class="input-number-field__input" type="text" id="max-input-weckpjg8p" name="max-input-weckpjg8p" placeholder="" value="9999" readonly="readonly"/>
+                </label>
+              </div>
+            </div>
+          </div>
+          <div class="header__filter-buttons"> 
+            <h2 class="header__subtitle">1034,5 Results</h2>
+          </div>
+        </div>
+        <aside class="side-filter food-filters">
+          <div class="side-filter__container">
+            <ul class="side-filter__groups">
+              <li class="side-filter__group is-open" data-group="classification">
+                <button class="side-filter__header" type="button" aria-expanded="true" aria-controls="filter-group-classification"><span class="side-filter__title">Classification</span><span class="side-filter__toggle">
+                    <svg class="icon-Arrow" width="12" height="7" viewBox="0 0 12 7" aria-hidden="true">
+                      <use href="./assets/icons/default/sprite.svg#Arrow"></use>
+                    </svg></span></button>
+                <ul class="side-filter__options" id="filter-group-classification" aria-hidden="false">
+                  <li class="side-filter__option">
+                    <label class="checkbox">
+                      <input class="checkbox__input" type="checkbox" id="elVegetables" name="food-type"/><span class="checkbox__box"><span class="checkbox__box-border"></span>
+                        <div class="checkbox__icon">
+                          <svg class="icon-checkmark" width="15" height="15" viewBox="0 0 15 15" aria-hidden="true">
+                            <use href="./assets/icons/default/sprite.svg#checkmark"></use>
+                          </svg>
+                        </div></span><span class="checkbox__text">Vegetables</span>
+                    </label>
+                  </li>
+                  <li class="side-filter__option">
+                    <label class="checkbox">
+                      <input class="checkbox__input" type="checkbox" id="elCarbs" name="food-type"/><span class="checkbox__box"><span class="checkbox__box-border"></span>
+                        <div class="checkbox__icon">
+                          <svg class="icon-checkmark" width="15" height="15" viewBox="0 0 15 15" aria-hidden="true">
+                            <use href="./assets/icons/default/sprite.svg#checkmark"></use>
+                          </svg>
+                        </div></span><span class="checkbox__text">Carbs</span>
+                    </label>
+                  </li>
+                  <li class="side-filter__option">
+                    <label class="checkbox">
+                      <input class="checkbox__input" type="checkbox" id="elFats" name="food-type"/><span class="checkbox__box"><span class="checkbox__box-border"></span>
+                        <div class="checkbox__icon">
+                          <svg class="icon-checkmark" width="15" height="15" viewBox="0 0 15 15" aria-hidden="true">
+                            <use href="./assets/icons/default/sprite.svg#checkmark"></use>
+                          </svg>
+                        </div></span><span class="checkbox__text">Fats</span>
+                    </label>
+                  </li>
+                </ul>
+              </li>
+              <li class="side-filter__group is-open" data-group="delivery-period">
+                <button class="side-filter__header" type="button" aria-expanded="true" aria-controls="filter-group-delivery-period"><span class="side-filter__title">Delivery Period</span><span class="side-filter__toggle">
+                    <svg class="icon-Arrow" width="12" height="7" viewBox="0 0 12 7" aria-hidden="true">
+                      <use href="./assets/icons/default/sprite.svg#Arrow"></use>
+                    </svg></span></button>
+                <ul class="side-filter__options" id="filter-group-delivery-period" aria-hidden="false">
+                  <li class="side-filter__option">
+                    <label class="checkbox">
+                      <input class="checkbox__input" type="checkbox" id="el1h" name="delivery-time"/><span class="checkbox__box"><span class="checkbox__box-border"></span>
+                        <div class="checkbox__icon">
+                          <svg class="icon-checkmark" width="15" height="15" viewBox="0 0 15 15" aria-hidden="true">
+                            <use href="./assets/icons/default/sprite.svg#checkmark"></use>
+                          </svg>
+                        </div></span><span class="checkbox__text">1 h</span>
+                    </label>
+                  </li>
+                  <li class="side-filter__option">
+                    <label class="checkbox">
+                      <input class="checkbox__input" type="checkbox" id="el24h" name="delivery-time"/><span class="checkbox__box"><span class="checkbox__box-border"></span>
+                        <div class="checkbox__icon">
+                          <svg class="icon-checkmark" width="15" height="15" viewBox="0 0 15 15" aria-hidden="true">
+                            <use href="./assets/icons/default/sprite.svg#checkmark"></use>
+                          </svg>
+                        </div></span><span class="checkbox__text">24 h</span>
+                    </label>
+                  </li>
+                  <li class="side-filter__option">
+                    <label class="checkbox">
+                      <input class="checkbox__input" type="checkbox" id="elToday" name="delivery-time"/><span class="checkbox__box"><span class="checkbox__box-border"></span>
+                        <div class="checkbox__icon">
+                          <svg class="icon-checkmark" width="15" height="15" viewBox="0 0 15 15" aria-hidden="true">
+                            <use href="./assets/icons/default/sprite.svg#checkmark"></use>
+                          </svg>
+                        </div></span><span class="checkbox__text">Today</span>
+                    </label>
+                  </li>
+                  <li class="side-filter__option">
+                    <label class="checkbox">
+                      <input class="checkbox__input" type="checkbox" id="elNextWeek" name="delivery-time"/><span class="checkbox__box"><span class="checkbox__box-border"></span>
+                        <div class="checkbox__icon">
+                          <svg class="icon-checkmark" width="15" height="15" viewBox="0 0 15 15" aria-hidden="true">
+                            <use href="./assets/icons/default/sprite.svg#checkmark"></use>
+                          </svg>
+                        </div></span><span class="checkbox__text">Next Week</span>
+                    </label>
+                  </li>
+                </ul>
+              </li>
+              <li class="side-filter__group is-open" data-group="size">
+                <button class="side-filter__header" type="button" aria-expanded="true" aria-controls="filter-group-size"><span class="side-filter__title">Size</span><span class="side-filter__toggle">
+                    <svg class="icon-Arrow" width="12" height="7" viewBox="0 0 12 7" aria-hidden="true">
+                      <use href="./assets/icons/default/sprite.svg#Arrow"></use>
+                    </svg></span></button>
+                <ul class="side-filter__options" id="filter-group-size" aria-hidden="false">
+                  <li class="side-filter__option">
+                    <label class="checkbox">
+                      <input class="checkbox__input" type="checkbox" id="elHuge" name="size"/><span class="checkbox__box"><span class="checkbox__box-border"></span>
+                        <div class="checkbox__icon">
+                          <svg class="icon-checkmark" width="15" height="15" viewBox="0 0 15 15" aria-hidden="true">
+                            <use href="./assets/icons/default/sprite.svg#checkmark"></use>
+                          </svg>
+                        </div></span><span class="checkbox__text">Huge</span>
+                    </label>
+                  </li>
+                  <li class="side-filter__option">
+                    <label class="checkbox">
+                      <input class="checkbox__input" type="checkbox" id="elLarge" name="size"/><span class="checkbox__box"><span class="checkbox__box-border"></span>
+                        <div class="checkbox__icon">
+                          <svg class="icon-checkmark" width="15" height="15" viewBox="0 0 15 15" aria-hidden="true">
+                            <use href="./assets/icons/default/sprite.svg#checkmark"></use>
+                          </svg>
+                        </div></span><span class="checkbox__text">Large</span>
+                    </label>
+                  </li>
+                  <li class="side-filter__option">
+                    <label class="checkbox">
+                      <input class="checkbox__input" type="checkbox" id="elMedium" name="size"/><span class="checkbox__box"><span class="checkbox__box-border"></span>
+                        <div class="checkbox__icon">
+                          <svg class="icon-checkmark" width="15" height="15" viewBox="0 0 15 15" aria-hidden="true">
+                            <use href="./assets/icons/default/sprite.svg#checkmark"></use>
+                          </svg>
+                        </div></span><span class="checkbox__text">Medium</span>
+                    </label>
+                  </li>
+                  <li class="side-filter__option">
+                    <label class="checkbox">
+                      <input class="checkbox__input" type="checkbox" id="elSmall" name="size"/><span class="checkbox__box"><span class="checkbox__box-border"></span>
+                        <div class="checkbox__icon">
+                          <svg class="icon-checkmark" width="15" height="15" viewBox="0 0 15 15" aria-hidden="true">
+                            <use href="./assets/icons/default/sprite.svg#checkmark"></use>
+                          </svg>
+                        </div></span><span class="checkbox__text">Small</span>
+                    </label>
+                  </li>
+                  <li class="side-filter__option">
+                    <label class="checkbox">
+                      <input class="checkbox__input" type="checkbox" id="elTiny" name="size"/><span class="checkbox__box"><span class="checkbox__box-border"></span>
+                        <div class="checkbox__icon">
+                          <svg class="icon-checkmark" width="15" height="15" viewBox="0 0 15 15" aria-hidden="true">
+                            <use href="./assets/icons/default/sprite.svg#checkmark"></use>
+                          </svg>
+                        </div></span><span class="checkbox__text">Tiny</span>
+                    </label>
+                  </li>
+                </ul>
+              </li>
+            </ul>
+          </div>
+        </aside>
+      </div>
+      <div class="layout__footer">
+      </div>
+    </div>
+    <script src="js/index.js"></script>
+  </body>
+</html>
