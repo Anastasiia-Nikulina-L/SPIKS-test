@@ -10,7 +10,7 @@ mixin input-number-field(options = {})
         required=options.required
       )
 
-mixin value-slider(options)
+mixin value-slider-noui(options)
   - options = options || {}
   - const params = options.config ? { ...options.config, ...options } : options
   - const { showInputs, showMinInput, showMaxInput, minValue, maxValue, minRange, maxRange, unit, title, titleTag } = params
@@ -22,32 +22,34 @@ mixin value-slider(options)
       minValue: typeof minValue !== 'undefined' ? minValue : (typeof minRange !== 'undefined' ? minRange : 0),
       maxValue: typeof maxValue !== 'undefined' ? maxValue : (typeof maxRange !== 'undefined' ? maxRange : 100),
       showInputs: !!showInputs,
-      handles: (showMinInput && showMaxInput) ? 2 : (showMinInput || showMaxInput ? 1 : 0)
+      isSingleHandle: (showMinInput && !showMaxInput) || (!showMinInput && showMaxInput),
+      showMinInput: !!showMinInput,
+      showMaxInput: !!showMaxInput
     };
+  - const sliderId = 'nouislider-' + Math.random().toString(36).substr(2, 9);
 
-  .slider-container&attributes(attributes)(data-config=JSON.stringify(dataConfig))
+  .slider-container.noui-slider-container&attributes(attributes)(data-config=JSON.stringify(dataConfig), data-slider-id=sliderId)
     if title
       #{titleTag || 'h3'}.slider-title(class="slider__title")= title
 
-    .slider-default-track
-    .slider-track
+    .nouislider-target(id=sliderId)
 
     if showInputs
       .slider-inputs
         if showMinInput
           +input-number-field({
-            id: 'min-input-' + Math.random().toString(36).substr(2, 9),
+            id: 'min-input-' + sliderId,
             value: dataConfig.minValue,
             placeholder: params.minPlaceholder || '',
             required: params.required || false,
             attributes: { 'data-type': 'min' }
-          }).slider-input.slider-min-input
-        
+          }).slider-input.slider-min-input(data-type="min")
+
         if showMaxInput
           +input-number-field({
-            id: 'max-input-' + Math.random().toString(36).substr(2, 9),
-            value: dataConfig.maxValue,
+            id: 'max-input-' + sliderId,
+            value: dataConfig.isSingleHandle ? dataConfig.minValue : dataConfig.maxValue,
             placeholder: params.maxPlaceholder || '',
             required: params.required || false,
             attributes: { 'data-type': 'max' }
-          }).slider-input.slider-max-input
+          }).slider-input.slider-max-input(data-type="max")

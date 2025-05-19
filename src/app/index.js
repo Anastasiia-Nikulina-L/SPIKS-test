@@ -1,3 +1,5 @@
+// =require ../core/vendors/nouislider.min.js
+
 // =require ../core/config/js/index.js
 // =require ../core/lib/js/index.js
 

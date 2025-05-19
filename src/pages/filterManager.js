@@ -3,11 +3,6 @@ document.addEventListener('DOMContentLoaded', () => {
   const headerFilterButtonsContainer = document.querySelector('.header__filter-buttons');
   const resultsSubtitle = document.querySelector('.header__subtitle');
 
-  if (!sideFilterElement || !headerFilterButtonsContainer) {
-    console.warn('SideFilter or HeaderFilterButtonsContainer not found. Filter button functionality will not work.');
-    return;
-  }
-
   let activeFilterButtons = {};
 
   function updateResultsHeader() {

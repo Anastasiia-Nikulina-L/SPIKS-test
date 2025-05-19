@@ -38,19 +38,10 @@ class SideFilter {
       const textElement = labelWrapper.querySelector('.checkbox__text');
       if (textElement) {
         labelText = textElement.textContent.trim();
-      } else {
-        console.warn(`span.checkbox__text not found inside label for checkbox id "${checkboxInput.id}"`);
       }
-    } else {
-      console.warn(`label.checkbox wrapper not found for checkbox id "${checkboxInput.id}"`);
     }
 
     const checkboxId = checkboxInput.id;
-
-    if (!checkboxId) {
-      console.error('Checkbox ID is missing from input element!');
-      return;
-    }
 
     const event = new CustomEvent('filterSelectionChanged', {
       bubbles: true,

@@ -8,6 +8,8 @@
 @use '../core/ui/layout/value-slider/value-slider';
 @use '../sections/side-filter/side-filter';
 @use '../core/ui/layout/green-button/green-button';
+@use '../core/vendors/nouislider.min';
+//@use '../core/vendors/test';
 
 * {
   font-family: inherit;

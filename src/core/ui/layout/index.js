@@ -5,7 +5,6 @@
     console.log(element);
   };
 
-  console.log("мы в другом js");
 
   const mount = () => {
     const elements = Array.from(document.querySelectorAll('.selector'));
